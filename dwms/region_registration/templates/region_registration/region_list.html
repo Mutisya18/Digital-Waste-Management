@@ -1,0 +1,11 @@
+<!-- region_registration/templates/region_registration/region_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Registered Regions</h2>
+<ul>
+    {% for region in regions %}
+        <li>{{ region.name }} - {{ region.overall_area }} (Code: {{ region.code }})</li>
+    {% endfor %}
+</ul>
+{% endblock %}

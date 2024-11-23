@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success</title>
+    <style>
+        .success-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-header {
+            text-align: center;
+            color: #2c974b;
+            margin-bottom: 2rem;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #2c974b;
+        }
+
+        .details-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .details-title {
+            color: #1a73e8;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 0.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .detail-item {
+            margin: 0.5rem 0;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #586069;
+        }
+
+        .detail-value {
+            color: #24292e;
+        }
+
+        .action-buttons {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #586069;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-header">
+            <div class="success-icon">✓</div>
+            <h1>Registration Successful!</h1>
+            <p>Your establishment has been successfully registered in our system.</p>
+        </div>
+
+        <div class="details-section">
+            <h2 class="details-title">Establishment Details</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Establishment ID:</span>
+                    <span class="detail-value">{{ establishment.establishment_id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">{{ establishment.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Type:</span>
+                    <span class="detail-value">{{ establishment.get_type_display }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Plus Code:</span>
+                    <span class="detail-value">{{ establishment.plus_code }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Size:</span>
+                    <span class="detail-value">{{ establishment.size }} units</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Region:</span>
+                    <span class="detail-value">{{ establishment.region.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Building Type:</span>
+                    <span class="detail-value">{% if establishment.is_story_building %}Story Building{% else %}Single Story{% endif %}</span>
+                </div>
+                {% if establishment.is_story_building %}
+                <div class="detail-item">
+                    <span class="detail-label">Number of Stories:</span>
+                    <span class="detail-value">{{ establishment.number_of_stories }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="details-section">
+            <h2 class="details-title">Owner Details</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Owner ID:</span>
+                    <span class="detail-value">{{ owner.user_id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">{{ owner.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone Number:</span>
+                    <span class="detail-value">{{ owner.phone_number }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">National ID:</span>
+                    <span class="detail-value">{{ owner.national_id }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'homepage' %}" class="btn btn-primary">Return to Homepage</a>
+            <a href="{% url 'register_establishment' %}" class="btn btn-secondary">Register Another Establishment</a>
+        </div>
+    </div>
+</body>
+</html>

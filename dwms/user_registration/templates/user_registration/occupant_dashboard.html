@@ -1,0 +1,58 @@
+<!-- occupant_dashboard.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard occupant-dashboard">
+    <h2>Welcome, {{ user.name }}!</h2>
+    
+    <div class="dashboard-section">
+        <h3>Personal Details</h3>
+        <div class="personal-info">
+            <p><strong>Name:</strong> {{ user.name }}</p>
+            <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+            <p><strong>National ID:</strong> {{ user.national_id }}</p>
+            <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
+            <a href="{% url 'edit_profile' %}" class="btn">Edit Profile</a>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h3>My Enrollments</h3>
+        {% if enrollments %}
+            <ul class="enrollment-list">
+        <!-- occupant_dashboard.html -->
+{% for enrollment in enrollments %}
+    <li>
+        <p><strong>Establishment:</strong> {{ enrollment.establishment.name }}</p>
+        <p><strong>Floor Number:</strong> {{ enrollment.floor_number }}</p>
+        <p><strong>Plus Code:</strong> {{ enrollment.plus_code }}</p>
+        <p><strong>Occupancy Type:</strong> {{ enrollment.get_occupancy_type_display }}</p>
+        
+        <form method="post" action="{% url 'unenroll' enrollment.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger">Unenroll</button>
+        </form>
+    </li>
+{% endfor %}
+
+            </ul>
+        {% else %}
+            <p>You are not enrolled in any establishments.</p>
+        {% endif %}
+        <a href="{% url 'enroll_occupant' %}" class="btn">Enroll in New Establishment</a>
+    </div>
+</div>
+
+ {% if user.is_owner and user.is_occupant %}
+    {% if user_role == 'owner' %}
+        <a href="{% url 'switch_role' %}">Switch to Occupant Mode</a>
+    {% else %}
+        <a href="{% url 'switch_role' %}">Switch to Owner Mode</a>
+    {% endif %}
+{% elif user.is_owner %}
+    <a href="{% url 'switch_role' %}">Register as Occupant</a>
+{% elif user.is_occupant %}
+    <a href="{% url 'switch_role' %}">Register as Owner</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,64 @@
+<!-- owner_dashboard.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Establishment Owner Dashboard</h2>
+<p>Welcome, {{ user.name }}!</p>
+
+<div class="dashboard-section">
+    <h3>Your Establishments</h3>
+    {% if establishments_with_occupants %}
+        <ul>
+            {% for item in establishments_with_occupants %}
+                <li>
+                    <strong>{{ item.establishment.name }}</strong> ({{ item.establishment.get_type_display }})
+                    <ul>
+                        <li><strong>Region:</strong> {{ item.establishment.region.name }}</li>
+                        <li><strong>Plus Code:</strong> {{ item.establishment.plus_code }}</li>
+                        <li><strong>Size:</strong> {{ item.establishment.size }} units</li>
+                        <li><a href="{% url 'edit_establishment' item.establishment.id %}">Edit</a> | 
+                            <a href="{% url 'delete_establishment' item.establishment.id %}" onclick="return confirm('Are you sure you want to delete this establishment?');">Delete</a></li>
+                    </ul>
+
+                    <h4>Enrolled Occupants</h4>
+                    {% if item.occupants %}
+                        <ul>
+                            {% for occupant in item.occupants %}
+                                <li>
+                                    <p><strong>Name:</strong> {{ occupant.occupant.name }}</p>
+                                    <p><strong>Phone Number:</strong> {{ occupant.occupant.phone_number }}</p>
+                                    <p><strong>Plus Code:</strong> {{ occupant.plus_code }}</p>
+                                    <p><strong>Floor Number:</strong> {{ occupant.floor_number }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No occupants enrolled in this establishment.</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have not registered any establishments.</p>
+    {% endif %}
+    <a href="{% url 'register_establishment' %}" class="btn">Register New Establishment</a>
+</div>
+
+
+
+
+
+ {% if user.is_owner and user.is_occupant %}
+    {% if user_role == 'owner' %}
+        <a href="{% url 'switch_role' %}">Switch to Owner Mode</a>
+    {% else %}
+        <a href="{% url 'switch_role' %}">Switch to Occupant Mode</a>
+    {% endif %}
+{% elif user.is_owner %}
+    <a href="{% url 'switch_role' %}">Register as Occupant</a>
+{% elif user.is_occupant %}
+    <a href="{% url 'switch_role' %}">Register as Owner</a>
+{% endif %}
+
+{% endblock %}

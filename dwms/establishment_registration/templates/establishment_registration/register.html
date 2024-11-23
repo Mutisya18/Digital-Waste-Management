@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Register Your Establishment</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register Establishment</button>
+</form>
+{% endblock %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const regionSelect = document.getElementById("id_region");
+    const establishmentSelect = document.getElementById("id_establishment");
+
+    regionSelect.addEventListener("change", function() {
+        const regionId = regionSelect.value;
+        fetch(`/get_establishments_by_region/?region_id=${regionId}`)
+            .then(response => response.json())
+            .then(data => {
+                establishmentSelect.innerHTML = "";  // Clear current options
+                data.establishments.forEach(establishment => {
+                    const option = document.createElement("option");
+                    option.value = establishment.id;
+                    option.textContent = establishment.name;
+                    establishmentSelect.appendChild(option);
+                });
+            });
+    });
+});
+</script>
+
+{% endif %}

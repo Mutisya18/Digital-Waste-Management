@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="enrollment-container">
+    <h2>Enroll Under an Existing Establishment</h2>
+    <form method="post" id="enrollmentForm">
+        {% csrf_token %}
+        
+        <!-- Region Selection -->
+        <div class="form-group">
+            <label for="id_region">Select Region*:</label>
+            {{ form.region }}
+            <div class="error-message" id="region-error"></div>
+        </div>
+
+        <!-- Establishment Selection -->
+        <div class="form-group">
+            <label for="id_establishment">Select Establishment*:</label>
+            {{ form.establishment }}
+            <div class="error-message" id="establishment-error"></div>
+        </div>
+
+        <!-- Unit Information 
+        <div class="form-group">
+            <label for="id_unit_number">Unit Number*:</label>
+            {{ form.unit_number }}
+            <div class="error-message" id="unit-error"></div>
+        </div> -->
+        
+        <!-- Display other form fields -->
+        {% for field in form %}
+            {% if field.name not in 'region,establishment,unit_number' %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}*:</label>
+                {{ field }}
+                <div class="error-message" id="{{ field.name }}-error"></div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="submit-button">Enroll</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const regionSelect = document.getElementById('id_region');
+    const establishmentSelect = document.getElementById('id_establishment');
+
+    // Initially disable establishment select
+    establishmentSelect.disabled = true;
+    
+    // Add default option
+    establishmentSelect.innerHTML = '<option value="">Please select a region first</option>';
+
+    regionSelect.addEventListener('change', function() {
+        const regionId = this.value;
+        
+        if (regionId) {
+            establishmentSelect.disabled = false;
+            
+            // Show loading state
+            establishmentSelect.innerHTML = '<option value="">Loading establishments...</option>';
+            
+            // Fetch establishments for selected region
+            fetch(`/establishment/get_establishments_by_region/?region_id=${regionId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    establishmentSelect.innerHTML = '<option value="">Select an Establishment</option>';
+                    
+                    data.establishments.forEach(establishment => {
+                        const option = document.createElement('option');
+                        option.value = establishment.id;
+                        option.textContent = establishment.name;
+                        establishmentSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    establishmentSelect.innerHTML = '<option value="">Error loading establishments</option>';
+                });
+        } else {
+            // Reset and disable establishment select if no region selected
+            establishmentSelect.disabled = true;
+            establishmentSelect.innerHTML = '<option value="">Please select a region first</option>';
+        }
+    });
+
+    // Form validation
+    const form = document.getElementById('enrollmentForm');
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate region selection
+        if (!regionSelect.value) {
+            document.getElementById('region-error').textContent = 'Please select a region';
+            isValid = false;
+        }
+
+        // Validate establishment selection
+        if (!establishmentSelect.value) {
+            document.getElementById('establishment-error').textContent = 'Please select an establishment';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+<style>
+.enrollment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+</style>
+{% endblock %}

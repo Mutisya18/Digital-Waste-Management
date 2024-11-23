@@ -1,0 +1,11 @@
+<!-- region_registration/templates/region_registration/register_region.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Register New Region</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register Region</button>
+</form>
+{% endblock %}

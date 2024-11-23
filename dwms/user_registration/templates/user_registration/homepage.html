@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Welcome, {{ user.name }}!</h2>
+<h3>Choose Your Role:</h3>
+<ul>
+    <li><a href="{% url 'register_establishment' %}">Register as an Owner</a></li>
+    <li><a href="{% url 'enroll_occupant' %}">Register as an Occupant</a></li>
+    <li><a href="{% url 'register_region' %}">Register New Region</a></li>
+
+</ul>
+{% endblock %}

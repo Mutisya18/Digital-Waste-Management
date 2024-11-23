@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="role-selection">
+    <h2>Choose Your Role</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="role-options">
+            <button type="submit" name="role" value="occupant">I am an Occupant</button>
+            <button type="submit" name="role" value="owner">I am an Establishment Owner</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
